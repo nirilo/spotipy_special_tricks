@@ -11,7 +11,7 @@ Current features:
   - Uses a custom pattern (playlist 1 forward, playlist 2 in reverse)
 - **List track titles + first artist** for a given playlist
 
-• • •
+---
 
 ## Requirements
 

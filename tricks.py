@@ -53,9 +53,9 @@ def merge_playlists(
     """
     Merge two playlists by interleaving tracks and create a new playlist.
 
-    Pattern:
-    - Playlist 1 in normal order
-    - Playlist 2 in reverse order
+    Pattern :
+    - playlist 1 in normal order
+    - playlist 2 in reverse order
     - Stops when both lists are exhausted or limits are reached
     """
 
@@ -78,9 +78,8 @@ def merge_playlists(
         if i < len(tracks1):
             merged.append(tracks1[i])
         if i < len(tracks2):
-            #take from playlist 2 in reverse order
-            # j = len(tracks2) - i - 1
-            merged.append(tracks2[i])
+            j = len(tracks2) - i - 1
+            merged.append(tracks2[j])
 
     # print(f"Total merged tracks: {len(merged)}")
 

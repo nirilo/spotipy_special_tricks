@@ -26,3 +26,14 @@ Install dependencies:
 
 ```bash
 pip install spotipy python-dotenv
+```
+
+
+
+
+
+
+
+
+
+This project is not affiliated with or endorsed by Spotify. Use at your own risk and follow Spotify's terms of use.

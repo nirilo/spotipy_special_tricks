@@ -47,6 +47,7 @@ def get_all_track_uris(playlist_id: str, limit: int | None = None) -> list[str]:
 def merge_playlists(
     src1_id: str,
     src2_id: str,
+    src3_id: str,
     new_name: str,
     per_src_limit: int = 100,
 ) -> None:
@@ -58,7 +59,6 @@ def merge_playlists(
     - playlist 2 in reverse order
     - Stops when both lists are exhausted or limits are reached
     """
-
     user_id = sp.current_user()["id"]
     # print(f"Current user: {user_id}")
 
@@ -67,19 +67,35 @@ def merge_playlists(
 
     # print(f"Fetching up to {per_src_limit} tracks from playlist 2: {src2_id}")
     tracks2 = get_all_track_uris(src2_id, limit=per_src_limit)
-
-    # print(f"Playlist 1 tracks: {len(tracks1)}")
-    # print(f"Playlist 2 tracks: {len(tracks2)}")
+    tracks3 = get_all_track_uris(src3_id, limit=per_src_limit)
 
     merged: list[str] = []
     max_len = max(len(tracks1), len(tracks2))
 
-    for i in range(max_len):
-        if i < len(tracks1):
-            merged.append(tracks1[i])
-        if i < len(tracks2):
-            j = len(tracks2) - i - 1
-            merged.append(tracks2[j])
+    if src3_id is None:
+            max_len = max(len(tracks1), len(tracks2))
+
+            for i in range(max_len):
+                if i < len(tracks1):
+                    merged.append(tracks1[i])
+                if i < len(tracks2):
+                    merged.append(tracks2[i])
+                    # reverse order:
+                    # j = len(tracks2) - i - 1
+                    # merged.append(tracks2[j])
+    else:
+        max_len = max(len(tracks1), len(tracks2), len(tracks3))
+
+        for i in range(max_len):
+            if i < len(tracks1):
+                merged.append(tracks1[i])
+
+            if i < len(tracks3):
+                merged.append(tracks3[i])
+            elif i < len(tracks2):
+                merged.append(tracks2[i])
+                    # j = len(tracks2) - i - 1
+                    # merged.append(tracks2[j])
 
     # print(f"Total merged tracks: {len(merged)}")
 
@@ -148,6 +164,12 @@ def build_parser() -> argparse.ArgumentParser:
         help="Source playlist 2 ID",
     )
     merge_parser.add_argument(
+        "--src3",
+        required=False,
+        help="(optional) source playlist 3 ID. "
+             "If provided, it will take the positions that would belong to playlist 2.",
+    )
+    merge_parser.add_argument(
         "--name",
         required=False,
         help="Name of the new playlist. If omitted, a default based on the current month is used.",
@@ -186,6 +208,7 @@ def main() -> None:
         merge_playlists(
             src1_id=args.src1,
             src2_id=args.src2,
+            src3_id=args.src3,
             new_name=new_name,
             per_src_limit=args.per_src_limit,
         )
